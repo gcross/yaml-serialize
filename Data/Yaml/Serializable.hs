@@ -6,6 +6,7 @@
 -- @+node:gcross.20090530015605.30:<< Language Extensions >>
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE OverlappingInstances #-}
 -- @-node:gcross.20090530015605.30:<< Language Extensions >>
 -- @nl
 
@@ -13,6 +14,7 @@ module Data.Yaml.Serializable where
 
 -- @<< Imports >>
 -- @+node:gcross.20090530015605.18:<< Imports >>
+import Data.Either
 import Data.Yaml.Syck
 -- @-node:gcross.20090530015605.18:<< Imports >>
 -- @nl
@@ -42,6 +44,24 @@ instance (Show a, Read a) => Serializable a where
             (x,_):_ -> Right x
     fromYamlElem bad_elem = Left ["Unable to parse:  was expecting a string type, but instead got the following: " ++ show bad_elem]
 -- @-node:gcross.20090530015605.22:Show/Read based
+-- @+node:gcross.20090530015605.31:Lists
+instance Serializable a => Serializable [a] where
+    fromYamlElem (ESeq nodes) =
+        case partitionEithers . map fromYamlNode $ nodes of
+            ([],elems) -> Right elems
+            (errors,_) -> Left ("Not all members of the list could be parsed.":(map ("\t"++) . concat $ errors))
+    fromYamlElem _ = Left ["YAML node is not a list"]
+    toYamlElem lst = ESeq . map toYamlNode $ lst
+-- @-node:gcross.20090530015605.31:Lists
+-- @+node:gcross.20090530015605.32:Map
+-- @+at
+--  instance (Serializable a, Serializable b) => Map a b where
+--      fromYamlElem (ESeq nodes) = Right $ map fromYamlNode nodes
+--      fromYamlElem _ = Left "YAML node is not a list"
+--      toYamlElem lst = map toYamlNode lst
+-- @-at
+-- @@c
+-- @-node:gcross.20090530015605.32:Map
 -- @-node:gcross.20090530015605.21:Instances
 -- @-others
 -- @-node:gcross.20090530015605.17:@thin Serializable.hs
