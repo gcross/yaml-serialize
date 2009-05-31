@@ -1,0 +1,25 @@
+-- @+leo-ver=4-thin
+-- @+node:gcross.20090530015605.28:@thin yaml-serializable.cabal
+-- @@language Haskell
+
+Name:           yamal-serializable
+Description:    Serialization of Haskell values to/from YAML.
+Version:        1.0
+Category:       Text
+Cabal-Version:  >= 1.2
+License:        BSD3
+License-File:   LICENSE
+Author:         Gregory Crosswhite
+Maintainer:     Gregory Crosswhite <gcross@phys.washington.edu>
+Homepage:       http://github.com/gcross/yaml-serializable
+Synopsis:       Serialization of Haskell values to/from YAML.
+Build-Type:     Simple
+
+Library
+  Build-Depends:    base >= 3,
+                    HsSyck >= 0.45
+  Hs-Source-Dirs:   .
+  Exposed-Modules:  Data.Yaml.Serializable
+  GHC-Options:      -Wall
+-- @-node:gcross.20090530015605.28:@thin yaml-serializable.cabal
+-- @-leo
